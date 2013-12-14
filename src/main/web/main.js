@@ -121,7 +121,7 @@ function handleEvents(data, status, jqXHR) {
         
         dispatch(event);
         
-        if (event["version"] !== null) {
+        if (event["version"] != null) {
             version = Math.max(version, event.version);
         }
     }
