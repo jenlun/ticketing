@@ -1,7 +1,5 @@
 package com.lmax.ticketing.translate;
 
-import java.util.Map.Entry;
-
 import com.lmax.disruptor.EventTranslator;
 import com.lmax.ticketing.api.ConcertCreated;
 import com.lmax.ticketing.api.EventType;
@@ -10,12 +8,14 @@ import com.lmax.ticketing.domain.Concert;
 import com.lmax.ticketing.domain.Seating;
 import com.lmax.ticketing.domain.Section;
 
+import java.util.Map.Entry;
+
 public class ConcertAvailableTranslator implements EventTranslator<Message>
 {
     private Concert concert;
 
     @Override
-    public Message translateTo(Message message, long sequence)
+    public void translateTo(Message message, long sequence)
     {
         message.type.set(EventType.CONCERT_CREATED);
         
@@ -39,8 +39,6 @@ public class ConcertAvailableTranslator implements EventTranslator<Message>
             i++;
         }
         concertCreated.numSections.set(i);
-        
-        return message;
     }
 
     public void set(Concert concert)

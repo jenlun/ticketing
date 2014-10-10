@@ -1,10 +1,9 @@
 package com.lmax.ticketing.main;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -12,9 +11,6 @@ import java.net.URISyntaxException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 
 public class WebClient implements Runnable
 {
@@ -76,7 +72,7 @@ public class WebClient implements Runnable
     {
         Executor executor = Executors.newCachedThreadPool();
         CountDownLatch latch = new CountDownLatch(1);
-        WebClient client = new WebClient(new URI("http://localhost:7070/response?account=12"), latch);
+        WebClient client = new WebClient(new URI("http://localhost:7070/response?account=12&version=-1"), latch);
         executor.execute(client);
         
         latch.await();

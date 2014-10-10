@@ -1,4 +1,5 @@
 var version = -1;
+var accountId = new Date().getTime();
 
 var dispatchTable = {
     "ALLOCATION_REJECTED": allocationRejected,
@@ -89,7 +90,7 @@ function placeOrder(concertId, sectionId, seats) {
         'concertId': concertId, 
         'sectionId': sectionId,
         'numSeats': seats,
-        'accountId': 12, 
+        'accountId': accountId,
         'requestId': 76
     };
     
@@ -131,7 +132,7 @@ function handleEvents(data, status, jqXHR) {
 
 function poll() {
     $.ajax({
-        url: "response?account=12&version=" + version,
+        url: "response?account=" + accountId + "&version=" + version,
         context: document.body,
         type: "POST",
         success: handleEvents

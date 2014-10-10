@@ -1,16 +1,10 @@
 package com.lmax.ticketing.main;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
-import com.lmax.disruptor.ClaimStrategy;
-import com.lmax.disruptor.EventPublisher;
+import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.WaitStrategy;
-import com.lmax.disruptor.WaitStrategy.Option;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.ticketing.api.Message;
 import com.lmax.ticketing.domain.ConcertService;
 import com.lmax.ticketing.framework.Dispatcher;
@@ -18,6 +12,11 @@ import com.lmax.ticketing.framework.Publisher;
 import com.lmax.ticketing.io.Journaller;
 import com.lmax.ticketing.io.UdpDataSource;
 import com.lmax.ticketing.io.UdpEventHandler;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class ConcertServiceMain
 {
@@ -28,24 +27,22 @@ public class ConcertServiceMain
     public static void main(String[] args) throws IOException
     {
         Executor executor = Executors.newCachedThreadPool();
-        Option waitStrategy = WaitStrategy.Option.BLOCKING;
+        WaitStrategy waitStrategy = new BlockingWaitStrategy();
 
         // Out bound Event Handling...
-        Disruptor<Message> outboundDisruptor = new Disruptor<Message>(Message.FACTORY, 1024, executor,
-                ClaimStrategy.Option.SINGLE_THREADED, waitStrategy);
+        Disruptor<Message> outboundDisruptor = new Disruptor<Message>(Message.FACTORY, 1024, executor, ProducerType.SINGLE, waitStrategy);
         
         UdpEventHandler udpEventHandler = new UdpEventHandler("localhost", CLIENT_PORT);
         
         outboundDisruptor.handleEventsWith(udpEventHandler);
-        RingBuffer<Message> outboundBuffer = outboundDisruptor.start();
-        
+        outboundDisruptor.start();
+
         // In bound Event Handling
-        Disruptor<Message> inboundDisruptor = new Disruptor<Message>(Message.FACTORY, 1024, executor,
-                ClaimStrategy.Option.SINGLE_THREADED, waitStrategy);
-        
+        Disruptor<Message> inboundDisruptor = new Disruptor<Message>(Message.FACTORY, 1024, executor, ProducerType.MULTI, waitStrategy);
+
         Journaller journaller = new Journaller(new File("/tmp"));
-        
-        Publisher publisher = new Publisher(new EventPublisher<Message>(outboundBuffer));
+
+        Publisher publisher = new Publisher(outboundDisruptor);
         ConcertService concertService = new ConcertService(publisher);
         Dispatcher dispatcher = new Dispatcher(concertService);
         

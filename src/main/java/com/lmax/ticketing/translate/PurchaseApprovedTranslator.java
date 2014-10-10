@@ -11,7 +11,7 @@ public class PurchaseApprovedTranslator implements EventTranslator<Message>
     private TicketPurchase ticketPurchase;
 
     @Override
-    public Message translateTo(Message message, long sequence)
+    public void translateTo(Message message, long sequence)
     {
         message.type.set(EventType.ALLOCATION_APPROVED);
         AllocationApproved allocationApproved = message.event.asAllocationApproved;
@@ -19,8 +19,6 @@ public class PurchaseApprovedTranslator implements EventTranslator<Message>
         allocationApproved.accountId.set(ticketPurchase.accountId.get());
         allocationApproved.requestId.set(ticketPurchase.requestId.get());
         allocationApproved.numSeats.set(ticketPurchase.numSeats.get());
-        
-        return message;
     }
 
     public void set(TicketPurchase ticketPurchase)

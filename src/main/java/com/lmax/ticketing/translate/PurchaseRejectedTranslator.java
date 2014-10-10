@@ -1,11 +1,7 @@
 package com.lmax.ticketing.translate;
 
 import com.lmax.disruptor.EventTranslator;
-import com.lmax.ticketing.api.AllocationRejected;
-import com.lmax.ticketing.api.EventType;
-import com.lmax.ticketing.api.Message;
-import com.lmax.ticketing.api.RejectionReason;
-import com.lmax.ticketing.api.TicketPurchase;
+import com.lmax.ticketing.api.*;
 
 public class PurchaseRejectedTranslator implements EventTranslator<Message>
 {
@@ -13,7 +9,7 @@ public class PurchaseRejectedTranslator implements EventTranslator<Message>
     private TicketPurchase ticketPurchase;
 
     @Override
-    public Message translateTo(Message message, long sequence)
+    public void translateTo(Message message, long sequence)
     {
         message.type.set(EventType.ALLOCATION_REJECTED);
         
@@ -21,8 +17,6 @@ public class PurchaseRejectedTranslator implements EventTranslator<Message>
         allocationRejected.accountId.set(ticketPurchase.accountId.get());
         allocationRejected.requestId.set(ticketPurchase.requestId.get());
         allocationRejected.reason.set(rejectionReason);
-        
-        return message;
     }
 
     public void set(RejectionReason rejectionReason, TicketPurchase ticketPurchase)

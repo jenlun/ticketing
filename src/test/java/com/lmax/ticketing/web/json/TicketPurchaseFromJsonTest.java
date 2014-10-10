@@ -1,16 +1,15 @@
 package com.lmax.ticketing.web.json;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
-
-import org.junit.Test;
-
 import com.lmax.ticketing.api.EventType;
 import com.lmax.ticketing.api.Message;
 import com.lmax.ticketing.api.TicketPurchase;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class TicketPurchaseFromJsonTest
 {
@@ -24,7 +23,8 @@ public class TicketPurchaseFromJsonTest
         JSONObject object = (JSONObject) parser.parse(json);
         
         TicketPurchaseFromJson ticketPurchaseFromJson = new TicketPurchaseFromJson(object);
-        Message message = ticketPurchaseFromJson.translateTo(new Message(), 0);
+        Message message = new Message();
+        ticketPurchaseFromJson.translateTo(message, 0);
         
         assertThat(message.type.get(), is((Enum) EventType.TICKET_PURCHASE));
         TicketPurchase ticketPurchase = message.event.asTicketPurchase;

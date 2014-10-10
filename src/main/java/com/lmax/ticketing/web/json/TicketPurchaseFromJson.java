@@ -1,11 +1,10 @@
 package com.lmax.ticketing.web.json;
 
-import net.minidev.json.JSONObject;
-
 import com.lmax.disruptor.EventTranslator;
 import com.lmax.ticketing.api.EventType;
 import com.lmax.ticketing.api.Message;
 import com.lmax.ticketing.api.TicketPurchase;
+import net.minidev.json.JSONObject;
 
 public class TicketPurchaseFromJson implements EventTranslator<Message>
 {
@@ -17,7 +16,7 @@ public class TicketPurchaseFromJson implements EventTranslator<Message>
     }
 
     @Override
-    public Message translateTo(Message message, long sequence)
+    public void translateTo(Message message, long sequence)
     {
         message.type.set(EventType.TICKET_PURCHASE);
         
@@ -35,6 +34,5 @@ public class TicketPurchaseFromJson implements EventTranslator<Message>
         ticketPurchase.accountId.set(accountId.longValue());
         ticketPurchase.requestId.set(requestId.longValue());
         
-        return message;
     }
 }

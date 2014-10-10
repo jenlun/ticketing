@@ -12,7 +12,7 @@ public class SectionUpdatedTranslator implements EventTranslator<Message>
     private int seatsAvailable;
 
     @Override
-    public Message translateTo(Message message, long sequence)
+    public void translateTo(Message message, long sequence)
     {
         message.type.set(EventType.SECTION_UPDATED);
         
@@ -22,8 +22,6 @@ public class SectionUpdatedTranslator implements EventTranslator<Message>
         sectionUpdated.sectionId.set(sectionId);
         sectionUpdated.version.set(sequence);
         sectionUpdated.seatsAvailable.set(seatsAvailable);
-        
-        return message; 
     }
 
     public void set(long concertId, long sectionId, int seatsAvailable)

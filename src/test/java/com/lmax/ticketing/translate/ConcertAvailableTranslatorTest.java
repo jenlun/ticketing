@@ -1,13 +1,5 @@
 package com.lmax.ticketing.translate;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.junit.Test;
-
 import com.google.common.collect.Maps;
 import com.lmax.ticketing.api.ConcertCreated;
 import com.lmax.ticketing.api.EventType;
@@ -15,6 +7,13 @@ import com.lmax.ticketing.api.Message;
 import com.lmax.ticketing.domain.Concert;
 import com.lmax.ticketing.domain.Seating;
 import com.lmax.ticketing.domain.Section;
+import org.junit.Test;
+
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class ConcertAvailableTranslatorTest
 {
@@ -31,8 +30,9 @@ public class ConcertAvailableTranslatorTest
         
         Concert concert = new Concert(1234L, "Red Hot Chili Peppers", "Albert Hall", seating);
         translator.set(concert);
-        
-        Message output = translator.translateTo(new Message(), 0);
+
+        Message output = new Message();
+        translator.translateTo(output, 0);
         
         assertThat(output.type.get(), is((Enum) EventType.CONCERT_CREATED));
         ConcertCreated concertCreated = output.event.asConcertCreated;

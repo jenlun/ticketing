@@ -1,15 +1,13 @@
 package com.lmax.ticketing.translate;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.lmax.ticketing.api.AllocationApproved;
 import com.lmax.ticketing.api.EventType;
 import com.lmax.ticketing.api.Message;
 import com.lmax.ticketing.api.TicketPurchase;
-import com.lmax.ticketing.translate.PurchaseApprovedTranslator;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class PurchaseApprovedTranslatorTest
 {
@@ -26,8 +24,9 @@ public class PurchaseApprovedTranslatorTest
         ticketPurchase.sectionId.set(21L);
         
         translator.set(ticketPurchase);
-        
-        Message output = translator.translateTo(new Message(), 0);
+
+        Message output = new Message();
+        translator.translateTo(output, 0);
         
         assertThat(output.type.get(), is((Enum) EventType.ALLOCATION_APPROVED));
         AllocationApproved allocationApproved = output.event.asAllocationApproved;
