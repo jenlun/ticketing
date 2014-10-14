@@ -45,6 +45,11 @@ public class ConcertServiceMain
         Publisher publisher = new Publisher(outboundDisruptor);
         ConcertService concertService = new ConcertService(publisher);
         Dispatcher dispatcher = new Dispatcher(concertService);
+
+
+        // replay previous events from journal
+        // is this the right place?
+        // dispatcher.replay();
         
         inboundDisruptor.handleEventsWith(journaller).then(dispatcher);
         RingBuffer<Message> inboundBuffer = inboundDisruptor.start();
