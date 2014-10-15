@@ -13,4 +13,5 @@ Ideas:
 * Different/reliable transport for web -> service
 * New contracts. Use SBE or similar?
 * Client specific events, ie confirmed purchase.
-* Process business
+* Process business logic that requires i/o, ie wallet calls
+

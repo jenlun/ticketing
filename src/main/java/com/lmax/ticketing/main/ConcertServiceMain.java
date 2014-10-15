@@ -10,7 +10,7 @@ import com.lmax.ticketing.domain.ConcertService;
 import com.lmax.ticketing.framework.Dispatcher;
 import com.lmax.ticketing.framework.Publisher;
 import com.lmax.ticketing.io.Journaller;
-import com.lmax.ticketing.io.UdpDataSource;
+import com.lmax.ticketing.io.RabbitDataSource;
 import com.lmax.ticketing.io.UdpEventHandler;
 
 import java.io.File;
@@ -53,11 +53,9 @@ public class ConcertServiceMain
         
         inboundDisruptor.handleEventsWith(journaller).then(dispatcher);
         RingBuffer<Message> inboundBuffer = inboundDisruptor.start();
-        
-        // Data Source
-        UdpDataSource udpDataSource = new UdpDataSource(inboundBuffer, SERVER_PORT);
-        udpDataSource.bind();
-        
-        udpDataSource.run();
+
+        RabbitDataSource rabbitDataSource = new RabbitDataSource(inboundBuffer, "localhost");
+
+        rabbitDataSource.run();
     }
 }
