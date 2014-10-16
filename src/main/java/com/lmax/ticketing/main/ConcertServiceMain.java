@@ -11,6 +11,7 @@ import com.lmax.ticketing.framework.Dispatcher;
 import com.lmax.ticketing.framework.Publisher;
 import com.lmax.ticketing.io.Journaller;
 import com.lmax.ticketing.io.RabbitDataSource;
+import com.lmax.ticketing.io.RabbitEventHandler;
 import com.lmax.ticketing.io.UdpEventHandler;
 
 import java.io.File;
@@ -33,8 +34,9 @@ public class ConcertServiceMain
         Disruptor<Message> outboundDisruptor = new Disruptor<Message>(Message.FACTORY, 1024, executor, ProducerType.SINGLE, waitStrategy);
         
         UdpEventHandler udpEventHandler = new UdpEventHandler("localhost", CLIENT_PORT);
+        RabbitEventHandler rabbitEventHandler = new RabbitEventHandler("localhost", "response");
         
-        outboundDisruptor.handleEventsWith(udpEventHandler);
+        outboundDisruptor.handleEventsWith(rabbitEventHandler);
         outboundDisruptor.start();
 
         // In bound Event Handling
@@ -54,7 +56,7 @@ public class ConcertServiceMain
         inboundDisruptor.handleEventsWith(journaller).then(dispatcher);
         RingBuffer<Message> inboundBuffer = inboundDisruptor.start();
 
-        RabbitDataSource rabbitDataSource = new RabbitDataSource(inboundBuffer, "localhost");
+        RabbitDataSource rabbitDataSource = new RabbitDataSource(inboundBuffer, "localhost", "order");
 
         rabbitDataSource.run();
     }

@@ -17,10 +17,12 @@ public class RabbitDataSource implements Runnable {
 
     private static final String EXCHANGE_NAME = "ticket_orders";
     private final String host;
+    private final String routingKey;
 
-    public RabbitDataSource(RingBuffer<Message> inboundBuffer, String host) {
+    public RabbitDataSource(RingBuffer<Message> inboundBuffer, String host, String routingKey) {
         this.ringBuffer = inboundBuffer;
         this.host = host;
+        this.routingKey = routingKey;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class RabbitDataSource implements Runnable {
             channel.exchangeDeclare(EXCHANGE_NAME, "topic");
             String queueName = channel.queueDeclare().getQueue();
 
-            channel.queueBind(queueName, EXCHANGE_NAME, "order");
+            channel.queueBind(queueName, EXCHANGE_NAME, routingKey);
 
             System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 

@@ -48,7 +48,9 @@ public class PerformanceClient implements Runnable
             json.put("concertId", concertId);
             json.put("sectionId", sectionId);
             JSONParser parser = new JSONParser(JSONParser.MODE_PERMISSIVE);
-            
+
+            long totalT0 = System.currentTimeMillis();
+
             for (int x = 0; x < iterations; x++)
             {
                 long t0 = System.nanoTime();
@@ -105,7 +107,12 @@ public class PerformanceClient implements Runnable
                 
                 long timeUs = (t1-t0)/1000;
                 histogram.addObservation(timeUs);
+
+
             }
+
+            long totalT1 = System.currentTimeMillis();
+            System.out.println("calls / s = " + iterations * 1000 / (totalT1 - totalT0));
         }
         catch (Exception e)
         {

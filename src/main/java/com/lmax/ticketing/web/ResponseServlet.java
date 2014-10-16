@@ -1,5 +1,6 @@
 package com.lmax.ticketing.web;
 
+import com.lmax.ticketing.io.RabbitDataSource;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
@@ -79,11 +80,14 @@ public class ResponseServlet extends HttpServlet implements EventHandler<Message
             disruptor.handleEventsWith(this);
             ringBuffer = disruptor.start();
             
-            UdpDataSource udpDataSource = new UdpDataSource(ringBuffer, port);
-            udpDataSource.bind();
-            executor.execute(udpDataSource);
+            //UdpDataSource udpDataSource = new UdpDataSource(ringBuffer, port);
+            //udpDataSource.bind();
+            //executor.execute(udpDataSource);
+
+            RabbitDataSource rabbitDataSource = new RabbitDataSource(ringBuffer, "localhost", "response");
+            executor.execute(rabbitDataSource);
             
-            LOGGER.info("Listening on :" + port);
+            //LOGGER.info("Listening on :" + port);
         }
         catch (Exception e)
         {
