@@ -112,7 +112,9 @@ public class PerformanceClient implements Runnable
             }
 
             long totalT1 = System.currentTimeMillis();
-            System.out.println("calls / s = " + iterations * 1000 / (totalT1 - totalT0));
+            long dt =  (totalT1 - totalT0);
+            System.out.println("dt = " + dt);
+            System.out.println("calls / s = " + iterations * 1000.0 / dt );
         }
         catch (Exception e)
         {
@@ -123,7 +125,7 @@ public class PerformanceClient implements Runnable
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException
     {
         System.out.println("Warm-up");
-        PerformanceClient client = new PerformanceClient(100, 20000, 1, 1);
+        PerformanceClient client = new PerformanceClient(100, 2000, 1, 1);
         client.run();
         System.out.println(print(client.histogram));
         runRealPass();
@@ -132,19 +134,22 @@ public class PerformanceClient implements Runnable
     private static void runRealPass() throws URISyntaxException, InterruptedException
     {
         System.out.println("Real run");
-        int threadCount = 10;
+        int threadCount = 5;
         long concertIds = 2;
         long sectionIds = 8;
+        int iterations = 2000;
         
         Thread[] ts = new Thread[threadCount];
         PerformanceClient[] cs = new PerformanceClient[threadCount];
-        
+
+        long totalT0 = System.currentTimeMillis();
+
         for (int i = 0; i < threadCount; i++)
         {
             long concertId = (i % concertIds) + 1;
             long sectionId = (i % sectionIds) + 1;
             long accountId = i;
-            cs[i] = new PerformanceClient(accountId, 20000, concertId, sectionId);
+            cs[i] = new PerformanceClient(accountId, iterations, concertId, sectionId);
             ts[i] = new Thread(cs[i]);
             ts[i].start();
         }
@@ -153,6 +158,10 @@ public class PerformanceClient implements Runnable
         {
             t.join();
         }
+
+        long totalT1 = System.currentTimeMillis();
+        double dt =  threadCount * iterations * 1000.0 / (totalT1 - totalT0);
+        System.out.println("Total calls / s = " + dt);
         
         Histogram results = new Histogram(createBounds(1, 100000));
         
@@ -160,6 +169,7 @@ public class PerformanceClient implements Runnable
         {
             results.addObservations(c.histogram);
         }
+
         
         System.out.println(print(results));
     }
