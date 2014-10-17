@@ -5,28 +5,30 @@ import com.lmax.ticketing.api.EventType;
 import com.lmax.ticketing.api.Message;
 import com.lmax.ticketing.domain.ConcertService;
 
-public class Dispatcher implements EventHandler<Message>
-{
+public class Dispatcher implements EventHandler<Message> {
     private final ConcertService service;
 
-    public Dispatcher(ConcertService service)
-    {
+    public Dispatcher(ConcertService service) {
         this.service = service;
     }
-    
-    public void onEvent(Message message, long sequence, boolean endOfBatch)
-    {
+
+    public void onEvent(Message message, long sequence, boolean endOfBatch) {
         EventType type = (EventType) message.type.get();
-        
-        switch (type)
-        {
-        case CONCERT_CREATED:
-            service.on(message.event.asConcertCreated);
-            break;
-            
-        case TICKET_PURCHASE:
-            service.on(message.event.asTicketPurchase);
-            break;
+
+        switch (type) {
+            case CONCERT_CREATED:
+                service.on(message.event.asConcertCreated);
+                break;
+
+            case TICKET_PURCHASE:
+                service.on(message.event.asTicketPurchase);
+                break;
+
+            case PRICE_UPDATE:
+                service.on(message.event.asPriceUpdate);
+                break;
         }
+
+
     }
 }

@@ -5,16 +5,23 @@ var dispatchTable = {
     "ALLOCATION_REJECTED": allocationRejected,
     "ALLOCATION_APPROVED": allocationApproved,
     "SECTION_UPDATED"    : sectionUpdated,
-    "CONCERT_CREATED"    : concertCreated
+    "CONCERT_CREATED"    : concertCreated,
+    "PRICE_UPDATED"      : priceUpdated
 };
 
+function priceUpdated(event) {
+    console.log("priceUpdated " + event);
+    var price = sectionRow(event.concertId, event.sectionId).find(".price");
+    price.html(event.price);
+}
+
 function allocationRejected(event) {
-    
+    console.log("allocationRejected " + event);
 }
 
 
 function allocationApproved(event) {
-    
+    console.log("allocationApproved " + event);
 }
 
 
@@ -98,7 +105,7 @@ function placeOrder(concertId, sectionId, seats) {
         type: 'POST',
         url: 'request',
         contentType: 'application/json',
-        data: JSON.stringify(request),
+        data: JSON.stringify(request)
     });
 }
 

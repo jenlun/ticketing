@@ -10,4 +10,6 @@ public class TicketingEvent extends Union
     public final AllocationApproved asAllocationApproved = inner(new AllocationApproved());
     public final AllocationRejected asAllocationRejected = inner(new AllocationRejected());
     public final SectionUpdated     asSectionUpdated     = inner(new SectionUpdated());
+    public final PriceUpdate        asPriceUpdate        = inner(new PriceUpdate());
+    public final PriceUpdated       asPriceUpdated       = inner(new PriceUpdated());
 }

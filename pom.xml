@@ -47,5 +47,10 @@
             <artifactId>amqp-client</artifactId>
             <version>3.3.5</version>
         </dependency>
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle</artifactId>
+            <version>3.2.2</version>
+        </dependency>
     </dependencies>
 </project>

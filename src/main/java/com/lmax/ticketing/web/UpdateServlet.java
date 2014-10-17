@@ -19,10 +19,12 @@ import java.util.logging.Logger;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
-@SuppressWarnings("serial")
-public class RequestServlet extends HttpServlet
-{
-    private static final Logger LOGGER = Logger.getLogger(RequestServlet.class.getName());
+/**
+ * Created by jelu on 2014-10-17.
+ */
+public class UpdateServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(UpdateServlet.class.getName());
     private Disruptor<Message> disruptor;
 
 
@@ -31,7 +33,7 @@ public class RequestServlet extends HttpServlet
     public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
-        
+
         String host = config.getInitParameter("host");
         int port = Integer.parseInt(config.getInitParameter("port"));
 
@@ -44,7 +46,7 @@ public class RequestServlet extends HttpServlet
         disruptor.handleEventsWith(useUDP ? udpEventHandler : rabbitEventHandler);
         disruptor.start();
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
@@ -52,11 +54,12 @@ public class RequestServlet extends HttpServlet
         try
         {
             JSONObject request = (JSONObject) parser.parse(req.getReader());
-            disruptor.publishEvent(new TicketPurchaseFromJson(request));
+            disruptor.publishEvent(new PriceUpdateFromJson(request));
         }
         catch (Exception e)
         {
             throw new ServletException("Invalid input", e);
         }
     }
+
 }

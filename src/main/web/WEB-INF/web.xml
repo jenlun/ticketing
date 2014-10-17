@@ -10,7 +10,11 @@
         <init-param> 
             <param-name>port</param-name> 
             <param-value>50002</param-value> 
-        </init-param> 
+        </init-param>
+        <init-param>
+            <param-name>useUDP</param-name>
+            <param-value>true</param-value>
+        </init-param>
     </servlet>
 
     <servlet-mapping>
@@ -29,12 +33,39 @@
         <init-param> 
             <param-name>port</param-name> 
             <param-value>50001</param-value> 
-        </init-param> 
+        </init-param>
+        <init-param>
+            <param-name>useUDP</param-name>
+            <param-value>true</param-value>
+        </init-param>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>RequestServlet</servlet-name>
         <url-pattern>/request/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UpdateServlet</servlet-name>
+        <servlet-class>com.lmax.ticketing.web.UpdateServlet</servlet-class>
+        <load-on-startup/>
+        <init-param>
+            <param-name>host</param-name>
+            <param-value>localhost</param-value>
+        </init-param>
+        <init-param>
+            <param-name>port</param-name>
+            <param-value>50001</param-value>
+        </init-param>
+        <init-param>
+            <param-name>useUDP</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UpdateServlet</servlet-name>
+        <url-pattern>/update/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

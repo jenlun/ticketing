@@ -4,11 +4,15 @@ import com.lmax.ticketing.api.ConcertCreated;
 import com.lmax.ticketing.api.EventType;
 import com.lmax.ticketing.api.Message;
 import com.lmax.ticketing.io.RabbitEventHandler;
+import com.lmax.ticketing.io.UdpEventHandler;
 
 public class SeedClient {
+
+    public static final boolean USE_UDP = true; //TODO: use properties instead
+
     public static void main(String[] args) throws Exception {
         RabbitEventHandler rabbitEventHandler = new RabbitEventHandler("localhost", "order");
-
+        UdpEventHandler udpEventHandler = new UdpEventHandler("localhost", ConcertServiceMain.SERVER_PORT);
         {
             Message m1 = new Message();
             long concertId = 1L;
@@ -59,7 +63,10 @@ public class SeedClient {
             concertCreated.sections[7].seats.set(Integer.MAX_VALUE);
             concertCreated.sections[7].price.set(78.89F);
 
-            rabbitEventHandler.onEvent(m1, 0, true);
+            if(USE_UDP)
+                udpEventHandler.onEvent(m1, 0, true);
+            else
+                rabbitEventHandler.onEvent(m1, 0, true);
         }
 
         {
@@ -113,7 +120,10 @@ public class SeedClient {
             concertCreated.sections[7].seats.set(Integer.MAX_VALUE);
             concertCreated.sections[7].price.set(78.89F);
 
-            rabbitEventHandler.onEvent(m1, 0, true);
+            if(USE_UDP)
+                udpEventHandler.onEvent(m1, 0, true);
+            else
+                rabbitEventHandler.onEvent(m1, 0, true);
         }
     }
 }

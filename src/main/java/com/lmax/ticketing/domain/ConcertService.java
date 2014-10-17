@@ -1,20 +1,20 @@
 package com.lmax.ticketing.domain;
 
+import com.lmax.ticketing.api.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import com.google.common.collect.Maps;
-import com.lmax.ticketing.api.ConcertCreated;
-import com.lmax.ticketing.api.RejectionReason;
-import com.lmax.ticketing.api.SectionSeating;
-import com.lmax.ticketing.api.TicketPurchase;
 
 public class ConcertService implements Concert.Observer
 {
     private final ConcertServiceListener listener;
     private final Long2ObjectMap<Concert> concertRepository = new Long2ObjectOpenHashMap<Concert>();
+
+    private static final Logger LOGGER = Logger.getLogger(ConcertService.class.getName());
 
     public ConcertService(ConcertServiceListener listener)
     {
@@ -46,6 +46,29 @@ public class ConcertService implements Concert.Observer
         
         concert.allocateSeating(section, numSeats);
         listener.onPurchaseApproved(ticketPurchase);
+    }
+
+    public void on(PriceUpdate priceUpdate)
+    {
+        Concert concert = concertRepository.get(priceUpdate.concertId.get());
+        if (concert == null)
+        {
+            return;
+        }
+
+        Section section = concert.getSection(priceUpdate.sectionId.get());
+        if (section == null)
+        {
+            return;
+        }
+
+
+        concert.updatePrice(section, priceUpdate.price.get());
+
+        LOGGER.info("Price updated, " + priceUpdate.sectionId + " : " + priceUpdate.price);
+
+        listener.onPriceUpdated(concert.getId(), section.getId(), priceUpdate.price.get());
+
     }
     
     public void on(ConcertCreated eventCreated)

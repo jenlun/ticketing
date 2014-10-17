@@ -59,6 +59,11 @@ public class Concert
         notifyObservers(section, seating);
     }
 
+    public void updatePrice(Section section, float price)
+    {
+        section.updatePrice(price);
+    }
+
     private void notifyObservers(Section section, Seating seating)
     {
         for (int i = 0, n = observers.size(); i < n; i++)

@@ -125,7 +125,7 @@ public class PerformanceClient implements Runnable
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException
     {
         System.out.println("Warm-up");
-        PerformanceClient client = new PerformanceClient(100, 2000, 1, 1);
+        PerformanceClient client = new PerformanceClient(100, 10000, 1, 1);
         client.run();
         System.out.println(print(client.histogram));
         runRealPass();
@@ -137,7 +137,7 @@ public class PerformanceClient implements Runnable
         int threadCount = 5;
         long concertIds = 2;
         long sectionIds = 8;
-        int iterations = 2000;
+        int iterations = 10000;
         
         Thread[] ts = new Thread[threadCount];
         PerformanceClient[] cs = new PerformanceClient[threadCount];

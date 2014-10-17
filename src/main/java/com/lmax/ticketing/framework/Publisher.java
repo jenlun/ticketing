@@ -2,14 +2,12 @@ package com.lmax.ticketing.framework;
 
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.ticketing.api.Message;
+import com.lmax.ticketing.api.PriceUpdate;
 import com.lmax.ticketing.api.RejectionReason;
 import com.lmax.ticketing.api.TicketPurchase;
 import com.lmax.ticketing.domain.Concert;
 import com.lmax.ticketing.domain.ConcertServiceListener;
-import com.lmax.ticketing.translate.ConcertAvailableTranslator;
-import com.lmax.ticketing.translate.PurchaseApprovedTranslator;
-import com.lmax.ticketing.translate.PurchaseRejectedTranslator;
-import com.lmax.ticketing.translate.SectionUpdatedTranslator;
+import com.lmax.ticketing.translate.*;
 
 public class Publisher implements ConcertServiceListener
 {
@@ -18,6 +16,7 @@ public class Publisher implements ConcertServiceListener
     private final ConcertAvailableTranslator concertAvailableTranslator = new ConcertAvailableTranslator();
     private final PurchaseRejectedTranslator purchaseRejectedTranslator = new PurchaseRejectedTranslator();
     private final SectionUpdatedTranslator   sectionUpdatedTranslator   = new SectionUpdatedTranslator();
+    private final PriceUpdatedTranslator priceUpdatedTranslator     = new PriceUpdatedTranslator();
 
     public Publisher(Disruptor<Message> disruptor)
     {
@@ -51,4 +50,11 @@ public class Publisher implements ConcertServiceListener
         sectionUpdatedTranslator.set(concertId, sectionId, seatsAvailable);
         disruptor.publishEvent(sectionUpdatedTranslator);
     }
+
+    @Override
+    public void onPriceUpdated(long concertId, long sectionId, float price) {
+        priceUpdatedTranslator.set(concertId, sectionId, price);
+        disruptor.publishEvent(priceUpdatedTranslator);
+    }
+
 }
